@@ -22,3 +22,9 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Useful links
+
+ https://dev.to/dgmann/vue-application-as-a-wordpress-plugin-9nm
+
+ https://dev.to/workingwebsites/using-vue-in-wordpress-1b9l
