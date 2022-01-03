@@ -4,8 +4,8 @@
     <div class="row g-4 py-5 row-cols-1 row-cols-lg-4">
       <div class="feature col">
 
-        <b-form-input v-model="age_filter" placeholder="Select Age" type="range" min="1" max="15"></b-form-input>
-        <p><pre>Age &lt; {{ this.age_filter}}</pre></p>
+        <p><pre>Age &lt; {{ this.age_filter}}</pre>
+        <b-form-input v-model="age_filter" placeholder="Select Age" type="range" min="1" max="15"></b-form-input></p>
         Showing <b-badge variant="light">{{filteredDogs.length}}</b-badge> results
         <!-- <b-form-group
           label="Individual stacked checkboxes (default)"
@@ -95,13 +95,13 @@
 
 <b-col md="9" class="p-4">
       <b-card-title>{{dog.Name}} 
-         <small><b-badge style="" pill variant="success" v-if="dog.Availability.indexOf('available for adoption now!') >-1 ">Available</b-badge></small>
-        <!-- <b-badge variant="warning" v-if="dog.Availability.indexOf('home waiting') >-1 ">{{dog.Availability}}</b-badge>
-        <b-badge variant="secondary" v-if="dog.Availability.indexOf('soon.') >-1 ">{{dog.Availability}}</b-badge> -->
+         <small><b-badge style="" variant="success" v-if="dog.Availability.indexOf('available for adoption now!') >-1 ">Available</b-badge>
+        <b-badge variant="warning" v-if="dog.Availability.indexOf('home waiting') >-1 ">{{dog.Availability}}</b-badge>
+        <b-badge variant="secondary" v-if="dog.Availability.indexOf('soon.') >-1 ">{{dog.Availability}}</b-badge></small>
 
 
       </b-card-title>
-      <b-card-sub-title class="">
+      <b-card-sub-title class="d-flex justify-content-between">
         <div>{{dog.Age}} year(s) old </div>
         <div>
            <b-img
@@ -111,6 +111,7 @@
             v-if="dog.Classifications.IsChildFriendly"
             src="http://gaptest.local:10008/api/img/IsChildFriendly.jpg"
             alt="" 
+            class="mr-2"
           /> 
         
           <b-img
@@ -129,7 +130,7 @@
             v-if="dog.Classifications.IsCatFriendly"
             src="http://gaptest.local:10008/api/img/IsCatFriendly.jpg"
             alt=""
-            style="margin-right:5px"
+            
           />
           </div>
       </b-card-sub-title>
@@ -139,7 +140,7 @@
 
        </p>
        <p> </p>
-        {{dog.Description}}
+        <!-- {{dog.Description}} -->
       </b-card-text>
     
 
