@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
-import { BootstrapVue, IconsPlugin,VBTooltipPlugin,CardPlugin } from 'bootstrap-vue'
+import { BootstrapVue, IconsPlugin, VBTooltip} from 'bootstrap-vue'
+import { FormInputPlugin } from 'bootstrap-vue'
+
+import VueEasyLightbox from 'vue-easy-lightbox'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -13,5 +16,6 @@ new Vue({
 
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
-Vue.use(VBTooltipPlugin)
-Vue.use(CardPlugin)
+Vue.use(VueEasyLightbox)
+Vue.directive('b-tooltip', VBTooltip)
+Vue.use(FormInputPlugin)

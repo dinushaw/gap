@@ -3,16 +3,37 @@
     <h1 v-if="loading"><img width="32px" src="/api/img/loading.gif" />Loading...</h1>
     <div class="row g-4 py-5 row-cols-1 row-cols-lg-4">
       <div class="feature col">
-        <b-form-group
+
+        <b-form-input v-model="age_filter" placeholder="Select Age" type="range" min="1" max="15"></b-form-input>
+        <p><pre>Age &lt; {{ this.age_filter}}</pre></p>
+        Showing <b-badge variant="light">{{filteredDogs.length}}</b-badge> results
+        <!-- <b-form-group
           label="Individual stacked checkboxes (default)"
-          v-slot="{ ariaDescribedby }"
-        >
+          >
           <b-form-checkbox
-            v-for="option in options"
-            v-model="selected"
+            v-for="option in age_options"
+            v-model="age_filter"
             :key="option.value"
             :value="option.value"
-            :aria-describedby="ariaDescribedby"
+
+            name="flavour-3a"
+          >
+            {{ option.text }}
+          </b-form-checkbox>
+        </b-form-group> -->
+
+      </div>
+
+      <div class="feature col">
+        <b-form-group
+          label="Clasifications"
+        >
+          <b-form-checkbox
+            v-for="option in clasifications"
+            v-model="clasifications_selected"
+            :key="option.value"
+            :value="option.value"
+
             name="flavour-3a"
           >
             {{ option.text }}
@@ -21,41 +42,77 @@
       </div>
 
       <div class="feature col">
-        Search:
-        <b-form-input v-model="searchValue" placeholder="Search"></b-form-input>
+        <b-form-input v-model="searchValue" placeholder="Search"></b-form-input> <br>
+        <b-button size="sm" variant="outline-primary" @click="sortedDogs"><b-icon icon="sort-down-alt" @click="sortedDogs" aria-hidden="true"></b-icon> </b-button>
+
       </div>
     </div>
 
     <hr />
     
-    <b-card-group columns>
-      <b-card
+    <!-- <b-card-group columns> -->
+      <b-card no-body
         v-for="dog in filteredDogs"
         :key="dog.id"
-        :img-src="dog.ImageUrl"
         img-alt="Image"
-        img-top
         tag="article"
-        style="width: 100%"
-        class="mb-6 shadow-sm"
+        class="overflow-hidden mb-3"
         footer-tag="footer"
       >
-        
-      <b-card-title>{{dog.Name}}</b-card-title>
-      <b-card-sub-title class="d-flex justify-content-between align-items-center">
+<b-row no-gutters>
+    <b-col md="3">
+        <!-- <b-card-img :src="dog.ImageUrl" alt="Image" class="rounded-0" fluid></b-card-img> -->
+      <b-carousel
+    id="carousel-fade"
+    style="text-shadow: 0px 0px 2px #000"
+    fade
+    :interval="0"
+    img-width="102"
+    img-height="480"
+  >
+    <b-carousel-slide
+      :img-src="dog.ImageUrl"
+    ></b-carousel-slide>
+        <b-carousel-slide
+      :img-src="dog.ImageUrl"
+    ></b-carousel-slide>
+  </b-carousel>
+      
+      </b-col>
+
+
+
+
+<!-- <button @click="showSingle">Show single picture.</button>
+      <vue-easy-lightbox
+      escDisabled
+      moveDisabled
+      :visible="visible"
+      imgs="dog.ImageUrl"
+      :index="index"
+      @hide="handleHide"
+    ></vue-easy-lightbox>  -->
+
+<b-col md="9" class="p-4">
+      <b-card-title>{{dog.Name}} 
+         <small><b-badge style="" pill variant="success" v-if="dog.Availability.indexOf('available for adoption now!') >-1 ">Available</b-badge></small>
+        <!-- <b-badge variant="warning" v-if="dog.Availability.indexOf('home waiting') >-1 ">{{dog.Availability}}</b-badge>
+        <b-badge variant="secondary" v-if="dog.Availability.indexOf('soon.') >-1 ">{{dog.Availability}}</b-badge> -->
+
+
+      </b-card-title>
+      <b-card-sub-title class="">
         <div>{{dog.Age}} year(s) old </div>
         <div>
            <b-img
-           id="IsChildFriendly"
             v-b-tooltip.hover
             title="Child Frendly"
             width="30"
             v-if="dog.Classifications.IsChildFriendly"
             src="http://gaptest.local:10008/api/img/IsChildFriendly.jpg"
-            alt=""
-            
+            alt="" 
           /> 
-          <b-tooltip target="IsChildFriendly" title="Child Frendly"></b-tooltip>
+        
           <b-img
             v-b-tooltip.hover
             title="Dog Frendly"
@@ -77,6 +134,11 @@
           </div>
       </b-card-sub-title>
       <b-card-text>
+       <p> Racing Name: {{dog.RacingName ? dog.RacingName : 'Never Raced'}} <br>
+           Microcip No: {{dog.Microchip ? dog.Microchip : 'N/A'}}  
+
+       </p>
+       <p> </p>
         {{dog.Description}}
       </b-card-text>
     
@@ -86,13 +148,14 @@
         </b-card-text>
 
         <template #footer>
-        <b-badge v-b-tooltip.hover title="Cat Frendly" variant="success" v-if="dog.Availability.indexOf('available for adoption now!') >-1 ">{{dog.Availability}}</b-badge>
-        <b-badge variant="warning" v-if="dog.Availability.indexOf('home waiting') >-1 ">{{dog.Availability}}</b-badge>
-        <b-badge variant="secondary" v-if="dog.Availability.indexOf('soon.') >-1 ">{{dog.Availability}}</b-badge>
+          {{dog.Availability}}
+        
 
         </template>
+       </b-col> 
+       </b-row>
       </b-card>
-    </b-card-group>
+    <!-- </b-card-group> -->
   </div>
 </template>
 
@@ -104,19 +167,42 @@ export default {
     return {
       myDogs: null,
       searchValue: "",
+      age_filter:15,
       loading: false,
       selected: [], // Must be an array reference!
-      options: [
-        { text: "Orange", value: "orange" },
-        { text: "Apple", value: "apple" },
-        { text: "Pineapple", value: "pineapple" },
-        { text: "Grape", value: "grape" },
+      age_options: [
+        { text: "0-1 yr olds", value: "1" },
+        { text: "1-2 yr olds", value: "2" },
+        { text: "2-3 yr olds", value: "3" },
+        { text: "3-4 yr olds", value: "4" },
       ],
+      clasifications: [
+        { text: "IsChildFriendly", value: "IsChildFriendly" },
+        { text: "IsDogFriendly", value: "IsDogFriendly" },
+        { text: "IsCatFriendly", value: "IsCatFriendly" },
+        { text: "IsPoultryFriendly", value: "IsPoultryFriendly" },
+      ],
+      clasifications_selected: [],
+
     };
   },
   computed: {
     filteredDogs() {
       let tempDogs = this.myDogs;
+
+      if(this.age_filter>0){
+        tempDogs = tempDogs.filter((item) => {
+          return ((item.Age >0 && item.Age <= this.age_filter)? item : '') //re write this
+        }
+        );
+      }
+
+      if(this.clasifications_selected != ""){
+        tempDogs = tempDogs.filter((item) => {
+          return (item.Classifications.includes(this.clasifications_selected)) //re write this
+        }
+        );
+      }
 
       if (this.searchValue != "" && this.searchValue) {
         tempDogs = tempDogs.filter((item) => {
@@ -125,10 +211,25 @@ export default {
           );
         });
       }
+      // this.myDogs = tempDogs
       return tempDogs;
     },
+
   },
-  methods: {},
+  methods: {
+    sortedDogs(){
+      let tempDogs = this.filteredDogs
+      function compare(a, b) {
+        if (a.Age < b.Age)
+          return -1;
+        if (a.Age > b.Age)
+          return 1;
+        return 0;
+      }
+      this.myDogs = tempDogs
+      return tempDogs.sort(compare)
+    }
+  },
   filters: {
     truncate: function (text, length, suffix) {
       if (text.length > length) {
