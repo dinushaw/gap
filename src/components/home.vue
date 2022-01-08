@@ -4,7 +4,7 @@
     <div class="row g-4 py-5 row-cols-1 row-cols-lg-4">
       <div class="feature col">
 
-        <p><pre>Age &lt; {{ this.age_filter}}</pre>
+        <p><strong>Age &lt; {{ this.age_filter}}</strong>
         <b-form-input v-model="age_filter" placeholder="Select Age" type="range" min="1" max="15"></b-form-input></p>
         Showing <b-badge variant="light">{{filteredDogs.length}}</b-badge> results
         <!-- <b-form-group
@@ -42,8 +42,8 @@
       </div>
 
       <div class="feature col">
-        <b-form-input v-model="searchValue" placeholder="Search"></b-form-input> <br>
-        <b-button size="sm" variant="outline-primary" @click="sortedDogs"><b-icon icon="sort-down-alt" @click="sortedDogs" aria-hidden="true"></b-icon> </b-button>
+        <b-form-input v-model="searchValue" placeholder="Search by name"></b-form-input> <br>
+        <b-button v-b-tooltip.hover title="Sort by Age" size="sm" variant="outline-primary" @click="sortedDogs"><b-icon icon="sort-down-alt" @click="sortedDogs" aria-hidden="true"></b-icon> </b-button>
 
       </div>
     </div>
@@ -145,7 +145,11 @@
     
 
         <b-card-text>
-          {{ dog.Description | truncate(150, "...") }}
+          <!-- <span v-if="!read_more[dog.Name]"> {{ dog.Description | truncate(150, "...") }} </span>
+          <span v-if="read_more[dog.Name]"> {{ dog.Description }} </span>
+          <b-link href="#foo" @click="showMore(dog.Name)" v-if="!read_more[dog.Name]" class="btn btn-primary">Show more</b-link>
+          <b-link @click="showLess(dog.Name)" v-if="read_more[dog.Name]" class="btn btn-primary">Show less</b-link> -->
+          <truncate action-class="customClass" clamp="Show more" :length="90" less="Show Less" type="text" :text="dog.Description"></truncate>
         </b-card-text>
 
         <template #footer>
@@ -169,7 +173,7 @@ export default {
       myDogs: null,
       searchValue: "",
       age_filter:15,
-      loading: false,
+      loading: true,
       selected: [], // Must be an array reference!
       age_options: [
         { text: "0-1 yr olds", value: "1" },
@@ -184,6 +188,7 @@ export default {
         { text: "IsPoultryFriendly", value: "IsPoultryFriendly" },
       ],
       clasifications_selected: [],
+      read_more: {},
 
     };
   },
@@ -198,19 +203,16 @@ export default {
         );
       }
 
-      if(this.clasifications_selected != ""){
-        tempDogs = tempDogs.filter((item) => {
-          return (item.Classifications.includes(this.clasifications_selected)) //re write this
-        }
-        );
-      }
-
       if (this.searchValue != "" && this.searchValue) {
         tempDogs = tempDogs.filter((item) => {
           return item.Name.toUpperCase().includes(
             this.searchValue.toUpperCase()
           );
         });
+      }
+
+      if(this.clasifications_selected){
+        tempDogs= tempDogs.filter(item => this.clasifications_selected.every(selection => item['Classifications'][selection]===true))
       }
       // this.myDogs = tempDogs
       return tempDogs;
@@ -229,7 +231,14 @@ export default {
       }
       this.myDogs = tempDogs
       return tempDogs.sort(compare)
-    }
+    },
+    showMore(Name) {
+        this.$set(this.read_more, Name, true);
+    },
+    showLess(Name) {
+        this.$set(this.read_more, Name, false);
+    },
+
   },
   filters: {
     truncate: function (text, length, suffix) {
