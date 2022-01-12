@@ -15,9 +15,12 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(VueEasyLightbox)
 Vue.use(FormInputPlugin)
-Vue.use(truncate)
+// Vue.use(truncate)
 
 new Vue({
+  components: {
+    truncate
+  },
   render: h => h(App),
 }).$mount('#app')
 

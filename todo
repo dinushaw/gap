@@ -1,1 +1,9 @@
 add a variable to site host, rather than hard coding the URL 
+add corosul for multiple images - DONE
+no image place holder update - DONE
+Truncate description with showmore button - DONE
+computed properties are loaded before fething data
+Never raced filter - DONE
+Exclude 'Home waiting' filter - DONE
+Read more button for description - DONE
+Update Classification names - DONE
