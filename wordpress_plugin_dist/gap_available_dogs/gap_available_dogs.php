@@ -2,7 +2,7 @@
 /*
 Plugin Name: GAP-Available-Dogs
 Plugin URI: http://www.grv.org.au
-Description: a plugin to list available dogs on Greyhound Adoption Program Use the shortcode <strong>[available-dogs]</strong> to display all the dogs
+Description: a plugin to list available dogs on Greyhound Adoption Program Use the shortcode <strong>[available-dogs-v2]</strong> to display all the dogs
 Version: 2.0
 Author: Dinusha Withanage [dinushawithanage@gmail.com]
 License: GPL2
@@ -33,5 +33,5 @@ add_action('wp_enqueue_scripts', 'func_load_vuescripts');
      return $str;
  } // end function
 
-  add_shortcode( 'available-dogs', 'func_wp_vue' );
+  add_shortcode( 'available-dogs-v2', 'func_wp_vue' );
 ?>
