@@ -1,10 +1,5 @@
 <template>
-  <div class="container">
-
-
-    <h1 v-if="loading">
-      <img width="32px" src="/api/v2/img/loading.gif" />Loading...
-    </h1>
+  <div>
     <div class="row g-4 pt-5 pb-3 row-cols-1 row-cols-lg-3">
       <div class="feature col">
         <p>

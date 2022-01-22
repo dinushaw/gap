@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="container">
     <p>
       All greyhounds adopted from GAP are de-sexed, vaccinated, microchipped,
       wormed and health checked. During the foster process, they quickly and
@@ -71,7 +72,7 @@
           src="/api/v2/img/IsSmallDogFriendly.jpg"
           alt=""
           style="padding-top: 10px; padding-right: 10px"
-        />Description goes here</b-list-group-item
+        />All our greyhounds are assessed with small dogs. Some of our greyhounds either play too roughly or retain some prey drive that means they may be unsafe to live with a small dog.</b-list-group-item
       >
       <b-list-group-item
         ><img
@@ -79,12 +80,13 @@
           src="/api/v2/img/IsApartmentFriendly.jpg"
           alt=""
           style="padding-top: 10px; padding-right: 10px"
-        />Description goes here</b-list-group-item
+        />Some greyhounds, due to their placid nature, adapt well to apartments and units. This symbol indicates greyhounds that we believe may be suitable for apartment living.</b-list-group-item
       >
     </b-list-group>
     <br>
     <p v-if="this.showSaveMsg"><img width="25px" src="/api/v2/img/loading.gif"> Loading...</p>
     <home @finishLoading="loadingStop" />
+    </div>
   </div>
 </template>
 
