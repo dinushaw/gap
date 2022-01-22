@@ -13,6 +13,8 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.12",
     "vue-easy-lightbox": "^0.16.2",
+    "vue-image-lightbox": "^7.2.0",
+    "vue-lazyload": "^1.3.3",
     "vue-truncate-collapsed": "^3.0.1"
   },
   "devDependencies": {
