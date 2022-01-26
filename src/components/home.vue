@@ -72,7 +72,9 @@
       </div>
     </div>
     <b-badge variant="light">{{ filteredDogs.length }}</b-badge>
-    <span v-if="filteredDogs.length > 1 || filteredDogs.length == 0">dogs </span>
+    <span v-if="filteredDogs.length > 1 || filteredDogs.length == 0"
+      >dogs
+    </span>
     <span v-if="filteredDogs.length == 1">pooch </span>matching your selection
     <hr />
 
@@ -88,12 +90,32 @@
     >
       <b-row no-gutters>
         <b-col md="3">
+          <b-link
+          class="mx-auto"
+            v-if="dog.GapMediaLinks.length >0"
+            variant="success"
+            v-b-modal="'myModal'"
+            user="'item'"
+            @click="sendInfo(dog)"
+            ><b-icon icon="box-arrow-up-right" aria-hidden="true"></b-icon>
+            </b-link>
+          <img
+            v-lazy="dog.ImageUrl || dog.ImageUrl"
+            style="height: 100%"
+            @click="openGallery()"
+          />
+          <img v-if="!dog.ImageUrl" img-src="/api/v2/img/gap-no-image.jpg" />
+          <LightBox
+            ref="lightbox"
+            :media="media"
+            :showLightBox="showLightbox"
+          />
           <!-- <b-card-img :src="dog.ImageUrl" alt="Image" class="rounded-0" fluid></b-card-img> -->
-          <b-carousel
+          <!-- <b-carousel
             id="carousel-fade"
             style="text-shadow: 0px 0px 2px #000"
             fade
-            :interval="0"
+            :interval="10"
             img-width="1023"
             img-height="480"
           >
@@ -103,7 +125,7 @@
             ></b-carousel-slide>
             <b-carousel-slide :img-src="dog.ImageUrl"></b-carousel-slide>
             <b-carousel-slide :img-src="dog.ImageUrl"></b-carousel-slide>
-          </b-carousel>
+          </b-carousel> -->
         </b-col>
 
         <!-- <button @click="showSingle">Show single picture.</button>
@@ -115,7 +137,6 @@
       :index="index"
       @hide="handleHide"
     ></vue-easy-lightbox>  -->
-    <LightBox :media="media"></LightBox>
 
         <b-col md="9" class="p-4">
           <b-card-title
@@ -132,7 +153,7 @@
               <b-badge
                 variant="warning"
                 v-if="dog.Availability.indexOf('home waiting') > -1"
-                >{{ dog.Availability }}</b-badge
+                ><b-icon icon="house-door" aria-hidden="true"></b-icon> {{ dog.Availability }}</b-badge
               >
               <b-badge
                 variant="secondary"
@@ -223,10 +244,10 @@
             </span>
             <span v-if="read_more[dog.Name]"> {{ dog.Description }} </span>
             <b-link @click="showMore(dog.Name)" v-if="!read_more[dog.Name]"
-              >Read more</b-link
+              ><b-icon icon="chevron-expand" aria-hidden="true"></b-icon></b-link
             >
             <b-link @click="showLess(dog.Name)" v-if="read_more[dog.Name]"
-              >Show less</b-link
+              ><b-icon icon="chevron-contract" aria-hidden="true"></b-icon></b-link
             >
             <!-- <truncate action-class="customClass" clamp="Show more" :length="90" less="Show Less" type="text" :text="dog.Description"></truncate> -->
           </b-card-text>
@@ -237,13 +258,55 @@
         </b-col>
       </b-row>
     </b-card>
+
+    <b-modal id="myModal" hide-footer size="xl">
+      <!-- Hello {{ selectedDog.GapMediaLinks }} {{ selectedDog.Availability }} ! -->
+      <template #modal-title>
+        {{ selectedDog.Name }} - {{ selectedDog.Age }} Year(s) Old 
+      </template>
+      <b-carousel
+        id="carousel-fade"
+        style="text-shadow: 0px 0px 2px #000"
+        controls
+        indicators
+        label-next = 'Next'
+        :interval="0"
+        img-width="1023"
+        img-height="480"
+      >
+        <div v-for="dogImage in selectedDog.GapMediaLinks" :key="dogImage.id">
+          <b-carousel-slide
+            v-if="dogImage.FileType == 'IMAGE'"
+            
+            :img-src="imageLink"
+            :caption="dogImage.Caption"
+          ></b-carousel-slide>
+          <!-- <b-carousel-slide v-if="dogImage.FileType == 'VIDEO'"
+          :text-html="embedCode"
+          >
+            <b-embed
+              type="iframe"
+              aspect="16by9"
+              :src="embedurl"
+              allowfullscreen
+            ></b-embed>
+          </b-carousel-slide> -->
+          <b-carousel-slide v-if="dogImage.FileType == 'VIDEO'" controls="false">
+            <template #img>
+              <b-embed type="iframe" aspect="16by9" :src="embedurl" modestbranding></b-embed>
+            </template>
+          </b-carousel-slide>
+        </div>
+      </b-carousel>
+    </b-modal>
     <!-- </b-card-group> -->
   </div>
 </template>
 
 <script>
 // import axios from 'axios';
-import LightBox from 'vue-image-lightbox'
+import LightBox from "vue-image-lightbox";
+require("vue-image-lightbox/dist/vue-image-lightbox.min.css");
 
 export default {
   name: "home",
@@ -258,7 +321,7 @@ export default {
       searchValue: "",
       never_raced: false,
       home_waiting: false,
-      age_filter: 15,
+      age_filter: 14,
       loading: true,
       selected: [], // Must be an array reference!
       errors: [],
@@ -279,6 +342,19 @@ export default {
       ],
       clasifications_selected: [],
       read_more: {},
+      media: [
+        {
+          thumb:
+            "http://fasttrack.blob.core.windows.net/fasttrackpublic/GAPDogs/5875.jpg",
+          src: "http://fasttrack.blob.core.windows.net/fasttrackpublic/GAPDogs/5875.jpg",
+        },
+      ],
+      showLightbox: false,
+      selectedDog: "",
+      embedurl: "https://www.youtube.com/embed/zpOULjyy-n8?controls=0",
+      embedCode:
+        '<iframe width="560" height="315" src="https://www.youtube.com/embed/O41t33XZS6I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+      imageLink:'https://gap.grv.org.au/wp-content/uploads/2021/12/Lucas-Scott-with-Stuart-the-greyhound_.jpg'  
     };
   },
   computed: {
@@ -291,7 +367,7 @@ export default {
         });
       }
 
-      if (this.searchValue != "" && this.searchValue) {
+      if (this.searchValue != "" && this.searchValue && tempDogs) {
         tempDogs = tempDogs.filter((item) => {
           return item.Name.toUpperCase().includes(
             this.searchValue.toUpperCase()
@@ -299,7 +375,7 @@ export default {
         });
       }
 
-      if (this.clasifications_selected) {
+      if (this.clasifications_selected && tempDogs) {
         tempDogs = tempDogs.filter((item) =>
           this.clasifications_selected.every(
             (selection) => item["Classifications"][selection] === true
@@ -307,13 +383,13 @@ export default {
         );
       }
 
-      if (this.never_raced) {
+      if (this.never_raced && tempDogs) {
         tempDogs = tempDogs.filter((item) => {
           if (!item.RacingName) return item;
         });
       }
 
-      if (this.home_waiting) {
+      if (this.home_waiting && tempDogs) {
         tempDogs = tempDogs.filter((item) => {
           if (!item.Availability.includes("home waiting")) return item;
         });
@@ -339,6 +415,13 @@ export default {
     showLess(Name) {
       this.$set(this.read_more, Name, false);
     },
+    openGallery() {
+      this.$refs.lightbox.showImage();
+      // this.showLightbox = true;
+    },
+    sendInfo(dog) {
+      this.selectedDog = dog;
+    },
   },
   filters: {
     truncate: function (text, length, suffix) {
@@ -349,17 +432,17 @@ export default {
       }
     },
   },
-  async created() {
+  created: async function () {
     this.loading = true;
-    //const response = await fetch("http://gap.grv.org.au/api/apicall.php");
-    const response = await fetch(this.hostname+"/api/v2/apicall.php");
-    //const response = await fetch("/api/v2/apicall.php");
+    const response = await fetch("https://gap.grv.org.au/api/v2/apicall.php");
+    //const response = await fetch(this.hostname+"/api/v2/apicall.php");
+    //const response = await fetch("/api/v2/apicall.php"); //For Prod
     try {
       this.myDogs = await response.json();
-      this.$emit('finishLoading');
+      this.$emit("finishLoading");
+      this.loading = false;
     } catch (error) {
-
-      console.log("ERROR CODE:113 - FT JSON ERROR!")
+      console.log("ERROR CODE:113 - FT JSON ERROR!");
     }
 
     this.loading = false;

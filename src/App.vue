@@ -19,6 +19,8 @@
     <b-list-group>
       <b-list-group-item
         ><img
+          v-b-tooltip.hover
+          title="Child Tolerant"
           class="pull-left"
           src="/api/v2/img/IsChildFriendly.jpg"
           alt=""
@@ -30,6 +32,8 @@
 
       <b-list-group-item
         ><img
+          v-b-tooltip.hover
+          title="Prefer Companion"
           class="pull-left"
           src="/api/v2/img/IsDogFriendly.jpg"
           alt=""
@@ -40,6 +44,8 @@
       >
       <b-list-group-item
         ><img
+          v-b-tooltip.hover
+          title="Cat Frendly"        
           class="pull-left"
           src="/api/v2/img/IsCatFriendly.jpg"
           alt=""
@@ -48,6 +54,8 @@
       </b-list-group-item>
       <b-list-group-item
         ><img
+          v-b-tooltip.hover
+          title="Livestock Tolerant"        
           class="pull-left"
           src="/api/v2/img/IsLivestockFriendly.jpg"
           alt=""
@@ -58,6 +66,8 @@
       >
       <b-list-group-item
         ><img
+          v-b-tooltip.hover
+          title="Poultry Tolerant"        
           class="pull-left"
           src="/api/v2/img/IsPoultryFriendly.jpg"
           alt=""
@@ -68,6 +78,8 @@
       >
       <b-list-group-item
         ><img
+          v-b-tooltip.hover
+          title="Small Dog Friendly"        
           class="pull-left"
           src="/api/v2/img/IsSmallDogFriendly.jpg"
           alt=""
@@ -76,6 +88,8 @@
       >
       <b-list-group-item
         ><img
+          v-b-tooltip.hover
+          title="Apartment Friendly"        
           class="pull-left"
           src="/api/v2/img/IsApartmentFriendly.jpg"
           alt=""
@@ -92,6 +106,7 @@
 
 <script>
 import home from "./components/home.vue";
+
 
 export default {
   name: "App",
