@@ -5,52 +5,38 @@
         <p>
           <strong>Age &lt; {{ this.age_filter }}</strong>
           <b-form-input
-            v-model="age_filter"
-            placeholder="Select Age"
-            type="range"
-            min="1"
-            max="15"
+              v-model="age_filter"
+              placeholder="Select Age"
+              type="range"
+              min="1"
+              max="15"
           ></b-form-input>
         </p>
         <b-button
-          v-b-tooltip.hover
-          title="Sort by Age"
-          size="sm"
-          variant="outline-primary"
-          @click="sortedDogs"
-          ><b-icon
-            icon="sort-down-alt"
+            v-b-tooltip.hover
+            title="Sort by Age"
+            size="sm"
+            variant="outline-primary"
             @click="sortedDogs"
-            aria-hidden="true"
-          ></b-icon>
-          Sort by Age</b-button
         >
-
-        <!-- <b-form-group
-          label="Individual stacked checkboxes (default)"
-          >
-          <b-form-checkbox
-            v-for="option in age_options"
-            v-model="age_filter"
-            :key="option.value"
-            :value="option.value"
-
-            name="flavour-3a"
-          >
-            {{ option.text }}
-          </b-form-checkbox>
-        </b-form-group> -->
+          <b-icon
+              icon="sort-down-alt"
+              @click="sortedDogs"
+              aria-hidden="true"
+          ></b-icon>
+          Sort by Age
+        </b-button>
       </div>
 
       <div class="feature col">
         <strong>Clasifications</strong>
         <b-form-group>
           <b-form-checkbox
-            v-for="option in clasifications"
-            v-model="clasifications_selected"
-            :key="option.value"
-            :value="option.value"
-            name="flavour-3a"
+              v-for="option in clasifications"
+              v-model="clasifications_selected"
+              :key="option.value"
+              :value="option.value"
+              name="flavour-3a"
           >
             {{ option.text }}
           </b-form-checkbox>
@@ -59,56 +45,73 @@
 
       <div class="feature col">
         <b-form-input
-          v-model="searchValue"
-          placeholder="Search by name"
+            v-model="searchValue"
+            placeholder="Search by name"
         ></b-form-input>
-        <br />
+        <br/>
         <b-form-checkbox v-model="never_raced" key="Never Raced"
-          >Never Raced</b-form-checkbox
+        >Never Raced
+        </b-form-checkbox
         >
         <b-form-checkbox v-model="home_waiting" key="Never Raced">
-          Exclude 'home waiting' dogs</b-form-checkbox
+          Exclude 'home waiting' dogs
+        </b-form-checkbox
         >
       </div>
     </div>
     <b-badge variant="light">{{ filteredDogs.length }}</b-badge>
-    <span v-if="filteredDogs.length > 1 || filteredDogs.length == 0"
-      >dogs
+    <span v-if="filteredDogs.length > 1 || filteredDogs.length === 0"
+    >dogs
     </span>
-    <span v-if="filteredDogs.length == 1">pooch </span>matching your selection
-    <hr />
+    <span v-if="filteredDogs.length === 1">pooch </span>matching your selection
+    <hr/>
 
-    <!-- <b-card-group columns> -->
     <b-card
-      no-body
-      v-for="dog in filteredDogs"
-      :key="dog.id"
-      :img-alt="dog.Name"
-      tag="article"
-      class="overflow-hidden mb-3"
-      footer-tag="footer"
+        no-body
+        v-for="dog in filteredDogs"
+        :key="dog.id"
+        :img-alt="dog.Name"
+        tag="article"
+        class="overflow-hidden mb-3"
+        footer-tag="footer"
     >
       <b-row no-gutters>
         <b-col md="3">
           <b-link
-          class="mx-auto"
-            v-if="dog.GapMediaLinks.length >0"
-            variant="success"
-            v-b-modal="'myModal'"
-            user="'item'"
-            @click="sendInfo(dog)"
-            ><b-icon icon="box-arrow-up-right" aria-hidden="true"></b-icon>
-            </b-link>
-          <img
-            v-lazy="dog.ImageUrl || dog.ImageUrl"
-            style="height: 100%"
-            @click="openGallery()"
-          />
-          <img v-if="!dog.ImageUrl" img-src="/api/v2/img/gap-no-image.jpg" />
+              class="mx-auto"
+              v-if="dog.GapMediaLinks.length >0"
+              variant="success"
+              v-b-modal="'myModal'"
+              user="'item'"
+              @click="sendInfo(dog)"
+          >
+            <img
+                v-lazy="dog.ImageUrl || dog.ImageUrl"
+                style="width: 100%"
+                @click="openGallery()"
+            />
+            <div
+                class=""
+                v-for="dogImage in dog.GapMediaLinks"
+                :key="dogImage.id"
+            >
+              <img
+                  class="float-left"
+                  v-if="dogImage.FileType == 'IMAGE'"
+                  style="width: 10%"
+                  v-lazy="dogImage.MediaUrl || dogImage.MediaUrl"
+              />
+              <b-icon icon="play-btn" aria-hidden="true" variant="dark"
+                      v-if="dogImage.FileType == 'VIDEO'"
+              />
+            </div>
+
+          </b-link>
+          <img v-if="!dog.ImageUrl" img-src="/api/v2/img/gap-no-image.jpg"/>
           <LightBox
-            ref="lightbox"
-            :media="media"
-            :showLightBox="showLightbox"
+              ref="lightbox"
+              :media="media"
+              :showLightBox="showLightbox"
           />
           <!-- <b-card-img :src="dog.ImageUrl" alt="Image" class="rounded-0" fluid></b-card-img> -->
           <!-- <b-carousel
@@ -140,96 +143,103 @@
 
         <b-col md="9" class="p-4">
           <b-card-title
-            >{{ dog.Name }}
+          >{{ dog.Name }}
             <small
-              ><b-badge
-                style=""
-                variant="success"
-                v-if="
+            >
+              <b-badge
+                  style=""
+                  variant="success"
+                  v-if="
                   dog.Availability.indexOf('available for adoption now!') > -1
                 "
-                >Available</b-badge
+              >Available
+              </b-badge
               >
               <b-badge
-                variant="warning"
-                v-if="dog.Availability.indexOf('home waiting') > -1"
-                ><b-icon icon="house-door" aria-hidden="true"></b-icon> {{ dog.Availability }}</b-badge
+                  variant="warning"
+                  v-if="dog.Availability.indexOf('home waiting') > -1"
+              >
+                <b-icon icon="house-door" aria-hidden="true"></b-icon>
+                {{ dog.Availability }}
+              </b-badge
               >
               <b-badge
-                variant="secondary"
-                v-if="dog.Availability.indexOf('soon.') > -1"
-                >{{ dog.Availability }}</b-badge
-              ></small
+                  variant="secondary"
+                  v-if="dog.Availability.indexOf('soon.') > -1"
+              >{{ dog.Availability }}
+              </b-badge
+              >
+            </small
             >
           </b-card-title>
           <b-card-sub-title class="d-flex justify-content-between">
             <div>{{ dog.Age }} year(s) old</div>
             <div>
               <b-img
-                v-b-tooltip.hover
-                title="Child Tolerant"
-                width="30"
-                v-if="dog.Classifications.IsChildFriendly"
-                src="/api/v2/img/IsChildFriendly.jpg"
-                alt=""
-                class="mr-2"
+                  v-b-tooltip.hover
+                  title="Child Tolerant"
+                  width="30"
+                  v-if="dog.Classifications.IsChildFriendly"
+                  src="/api/v2/img/IsChildFriendly.jpg"
+                  alt=""
+                  class="mr-2"
               />
 
               <b-img
-                v-b-tooltip.hover
-                title="Prefer Companion"
-                width="30"
-                v-if="dog.Classifications.IsDogFriendly"
-                src="/api/v2/img/IsDogFriendly.jpg"
-                alt=""
-                style="margin-right: 5px"
+                  v-b-tooltip.hover
+                  title="Prefer Companion"
+                  width="30"
+                  v-if="dog.Classifications.IsDogFriendly"
+                  src="/api/v2/img/IsDogFriendly.jpg"
+                  alt=""
+                  style="margin-right: 5px"
               />
               <b-img
-                v-b-tooltip.hover
-                title="Cat Frendly"
-                width="30"
-                v-if="dog.Classifications.IsCatFriendly"
-                src="/api/v2/img/IsCatFriendly.jpg"
-                alt=""
+                  v-b-tooltip.hover
+                  title="Cat Frendly"
+                  width="30"
+                  v-if="dog.Classifications.IsCatFriendly"
+                  src="/api/v2/img/IsCatFriendly.jpg"
+                  alt=""
               />
               <b-img
-                v-b-tooltip.hover
-                title="Livestock Tolerant"
-                width="30"
-                v-if="dog.Classifications.IsLivestockFriendly"
-                src="/api/v2/img/IsLivestockFriendly.jpg"
-                alt=""
+                  v-b-tooltip.hover
+                  title="Livestock Tolerant"
+                  width="30"
+                  v-if="dog.Classifications.IsLivestockFriendly"
+                  src="/api/v2/img/IsLivestockFriendly.jpg"
+                  alt=""
               />
               <b-img
-                v-b-tooltip.hover
-                title="Poultry Tolerant"
-                width="30"
-                v-if="dog.Classifications.IsPoultryFriendly"
-                src="/api/v2/img/IsPoultryFriendly.jpg"
-                alt=""
+                  v-b-tooltip.hover
+                  title="Poultry Tolerant"
+                  width="30"
+                  v-if="dog.Classifications.IsPoultryFriendly"
+                  src="/api/v2/img/IsPoultryFriendly.jpg"
+                  alt=""
               />
               <b-img
-                v-b-tooltip.hover
-                title="Small Dog Friendly"
-                width="30"
-                v-if="dog.Classifications.IsSmallDogFriendly"
-                src="/api/v2/img/IsSmallDogFriendly.jpg"
-                alt=""
+                  v-b-tooltip.hover
+                  title="Small Dog Friendly"
+                  width="30"
+                  v-if="dog.Classifications.IsSmallDogFriendly"
+                  src="/api/v2/img/IsSmallDogFriendly.jpg"
+                  alt=""
               />
               <b-img
-                v-b-tooltip.hover
-                title="Apartment Friendly"
-                width="30"
-                v-if="dog.Classifications.IsApartmentFriendly"
-                src="/api/v2/img/IsApartmentFriendly.jpg"
-                alt=""
+                  v-b-tooltip.hover
+                  title="Apartment Friendly"
+                  width="30"
+                  v-if="dog.Classifications.IsApartmentFriendly"
+                  src="/api/v2/img/IsApartmentFriendly.jpg"
+                  alt=""
               />
             </div>
           </b-card-sub-title>
           <b-card-text>
             <p>
               Racing Name:
-              {{ dog.RacingName ? dog.RacingName : "Never Raced" }} <br />
+              {{ dog.RacingName ? dog.RacingName : "Never Raced" }} <br/>
               Microchip No: {{ dog.Microchip ? dog.Microchip : "N/A" }}
             </p>
             <p></p>
@@ -244,10 +254,14 @@
             </span>
             <span v-if="read_more[dog.Name]"> {{ dog.Description }} </span>
             <b-link @click="showMore(dog.Name)" v-if="!read_more[dog.Name]"
-              ><b-icon icon="chevron-expand" aria-hidden="true"></b-icon></b-link
+            >Show more
+              <b-icon icon="chevron-expand" aria-hidden="true"></b-icon>
+            </b-link
             >
             <b-link @click="showLess(dog.Name)" v-if="read_more[dog.Name]"
-              ><b-icon icon="chevron-contract" aria-hidden="true"></b-icon></b-link
+            >Show less
+              <b-icon icon="chevron-contract" aria-hidden="true"></b-icon>
+            </b-link
             >
             <!-- <truncate action-class="customClass" clamp="Show more" :length="90" less="Show Less" type="text" :text="dog.Description"></truncate> -->
           </b-card-text>
@@ -262,24 +276,23 @@
     <b-modal id="myModal" hide-footer size="xl">
       <!-- Hello {{ selectedDog.GapMediaLinks }} {{ selectedDog.Availability }} ! -->
       <template #modal-title>
-        {{ selectedDog.Name }} - {{ selectedDog.Age }} Year(s) Old 
+        {{ selectedDog.Name }} - {{ selectedDog.Age }} Year(s) Old
       </template>
       <b-carousel
-        id="carousel-fade"
-        style="text-shadow: 0px 0px 2px #000"
-        controls
-        indicators
-        label-next = 'Next'
-        :interval="0"
-        img-width="1023"
-        img-height="480"
+          id="carousel-fade"
+          style="text-shadow: 0 0 2px #000"
+          controls
+          indicators
+          label-next='Next'
+          :interval="0"
+          img-width="1023"
+          img-height="480"
       >
         <div v-for="dogImage in selectedDog.GapMediaLinks" :key="dogImage.id">
           <b-carousel-slide
-            v-if="dogImage.FileType == 'IMAGE'"
-            
-            :img-src="imageLink"
-            :caption="dogImage.Caption"
+              v-if="dogImage.FileType == 'IMAGE'"
+              :img-src="dogImage.MediaUrl"
+              :caption="dogImage.Caption"
           ></b-carousel-slide>
           <!-- <b-carousel-slide v-if="dogImage.FileType == 'VIDEO'"
           :text-html="embedCode"
@@ -293,7 +306,9 @@
           </b-carousel-slide> -->
           <b-carousel-slide v-if="dogImage.FileType == 'VIDEO'" controls="false">
             <template #img>
-              <b-embed type="iframe" aspect="16by9" :src="embedurl" modestbranding></b-embed>
+              <b-embed type="iframe" aspect="16by9"
+                       :src="'https://www.youtube.com/embed/'+parseYoutubeURL(dogImage.MediaUrl)+'?controls=0'"
+                       modestbranding></b-embed>
             </template>
           </b-carousel-slide>
         </div>
@@ -306,6 +321,7 @@
 <script>
 // import axios from 'axios';
 import LightBox from "vue-image-lightbox";
+
 require("vue-image-lightbox/dist/vue-image-lightbox.min.css");
 
 export default {
@@ -326,26 +342,26 @@ export default {
       selected: [], // Must be an array reference!
       errors: [],
       age_options: [
-        { text: "0-1 yr olds", value: "1" },
-        { text: "1-2 yr olds", value: "2" },
-        { text: "2-3 yr olds", value: "3" },
-        { text: "3-4 yr olds", value: "4" },
+        {text: "0-1 yr olds", value: "1"},
+        {text: "1-2 yr olds", value: "2"},
+        {text: "2-3 yr olds", value: "3"},
+        {text: "3-4 yr olds", value: "4"},
       ],
       clasifications: [
-        { text: "Child Tolerant", value: "IsChildFriendly" },
-        { text: "Prefer Companion", value: "IsDogFriendly" },
-        { text: "Cat Tolerant", value: "IsCatFriendly" },
-        { text: "Poultry Tolerant", value: "IsPoultryFriendly" },
-        { text: "Livestock Tolerant", value: "IsLivestockFriendly" },
-        { text: "Samll Dog Tolerant", value: "IsSmallDogFriendly" },
-        { text: "Apartment Living", value: "IsApartmentFriendly" },
+        {text: "Child Tolerant", value: "IsChildFriendly"},
+        {text: "Prefer Companion", value: "IsDogFriendly"},
+        {text: "Cat Tolerant", value: "IsCatFriendly"},
+        {text: "Poultry Tolerant", value: "IsPoultryFriendly"},
+        {text: "Livestock Tolerant", value: "IsLivestockFriendly"},
+        {text: "Samll Dog Tolerant", value: "IsSmallDogFriendly"},
+        {text: "Apartment Living", value: "IsApartmentFriendly"},
       ],
       clasifications_selected: [],
       read_more: {},
       media: [
         {
           thumb:
-            "http://fasttrack.blob.core.windows.net/fasttrackpublic/GAPDogs/5875.jpg",
+              "http://fasttrack.blob.core.windows.net/fasttrackpublic/GAPDogs/5875.jpg",
           src: "http://fasttrack.blob.core.windows.net/fasttrackpublic/GAPDogs/5875.jpg",
         },
       ],
@@ -353,8 +369,8 @@ export default {
       selectedDog: "",
       embedurl: "https://www.youtube.com/embed/zpOULjyy-n8?controls=0",
       embedCode:
-        '<iframe width="560" height="315" src="https://www.youtube.com/embed/O41t33XZS6I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-      imageLink:'https://gap.grv.org.au/wp-content/uploads/2021/12/Lucas-Scott-with-Stuart-the-greyhound_.jpg'  
+          '<iframe width="560" height="315" src="https://www.youtube.com/embed/O41t33XZS6I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+      imageLink: 'https://gap.grv.org.au/wp-content/uploads/2021/12/Lucas-Scott-with-Stuart-the-greyhound_.jpg'
     };
   },
   computed: {
@@ -370,16 +386,16 @@ export default {
       if (this.searchValue != "" && this.searchValue && tempDogs) {
         tempDogs = tempDogs.filter((item) => {
           return item.Name.toUpperCase().includes(
-            this.searchValue.toUpperCase()
+              this.searchValue.toUpperCase()
           );
         });
       }
 
       if (this.clasifications_selected && tempDogs) {
         tempDogs = tempDogs.filter((item) =>
-          this.clasifications_selected.every(
-            (selection) => item["Classifications"][selection] === true
-          )
+            this.clasifications_selected.every(
+                (selection) => item["Classifications"][selection] === true
+            )
         );
       }
 
@@ -401,11 +417,13 @@ export default {
   methods: {
     sortedDogs() {
       let tempDogs = this.filteredDogs;
+
       function compare(a, b) {
         if (a.Age < b.Age) return -1;
         if (a.Age > b.Age) return 1;
         return 0;
       }
+
       this.myDogs = tempDogs;
       return tempDogs.sort(compare);
     },
@@ -422,6 +440,14 @@ export default {
     sendInfo(dog) {
       this.selectedDog = dog;
     },
+    parseYoutubeURL(url) {
+      var video_id = url.split('v=')[1];
+      var ampersandPosition = video_id.indexOf('&');
+      if (ampersandPosition != -1) {
+        video_id = video_id.substring(0, ampersandPosition);
+      }
+      return video_id;
+    }
   },
   filters: {
     truncate: function (text, length, suffix) {
