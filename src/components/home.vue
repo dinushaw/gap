@@ -29,11 +29,10 @@
       </div>
 
       <div class="feature col">
-        <strong>Clasifications</strong>
         <b-form-group>
           <b-form-checkbox
-              v-for="option in clasifications"
-              v-model="clasifications_selected"
+              v-for="option in classifications"
+              v-model="classifications_selected"
               :key="option.value"
               :value="option.value"
               name="flavour-3a"
@@ -73,74 +72,36 @@
         :img-alt="dog.Name"
         tag="article"
         class="overflow-hidden mb-3"
-        footer-tag="footer"
-    >
+        footer-tag="footer">
       <b-row no-gutters>
         <b-col md="3">
           <b-link
               class="mx-auto"
               v-if="dog.GapMediaLinks.length >0"
               variant="success"
-              v-b-modal="'myModal'"
+              v-b-modal="'DogModal'"
               user="'item'"
-              @click="sendInfo(dog)"
-          >
+              @click="sendInfo(dog)">
             <img
                 v-lazy="dog.ImageUrl || dog.ImageUrl"
-                style="width: 100%"
-                @click="openGallery()"
-            />
-            <div
-                class=""
-                v-for="dogImage in dog.GapMediaLinks"
-                :key="dogImage.id"
-            >
-              <img
-                  class="float-left"
-                  v-if="dogImage.FileType == 'IMAGE'"
-                  style="width: 10%"
-                  v-lazy="dogImage.MediaUrl || dogImage.MediaUrl"
-              />
-              <b-icon icon="play-btn" aria-hidden="true" variant="dark"
-                      v-if="dogImage.FileType == 'VIDEO'"
-              />
+                style="width: 100%"/>
+            <div class="d-flex flex-row bd-highlight mb-3">
+              <span
+                  v-for="dogImage in dog.GapMediaLinks"
+                  :key="dogImage.id">
+                <img
+                    class="img-thumbnail"
+                    v-if="dogImage.FileType == 'IMAGE'"
+                    style="width: 35px; height: 35px; margin: 10px"
+                    v-lazy="dogImage.MediaUrl || dogImage.MediaUrl"/>
+                <p v-if="dogImage.FileType == 'VIDEO'" class="h3 mb-2">
+                  <b-icon class=" " icon="play-btn-fill" aria-hidden="true" variant="dark" style="margin: 15px; width: 15px"/>
+                </p>
+              </span>
             </div>
-
           </b-link>
           <img v-if="!dog.ImageUrl" img-src="/api/v2/img/gap-no-image.jpg"/>
-          <LightBox
-              ref="lightbox"
-              :media="media"
-              :showLightBox="showLightbox"
-          />
-          <!-- <b-card-img :src="dog.ImageUrl" alt="Image" class="rounded-0" fluid></b-card-img> -->
-          <!-- <b-carousel
-            id="carousel-fade"
-            style="text-shadow: 0px 0px 2px #000"
-            fade
-            :interval="10"
-            img-width="1023"
-            img-height="480"
-          >
-            <b-carousel-slide
-              v-if="dog.ImageUrl == ''"
-              img-src="/api/v2/img/gap-no-image.jpg"
-            ></b-carousel-slide>
-            <b-carousel-slide :img-src="dog.ImageUrl"></b-carousel-slide>
-            <b-carousel-slide :img-src="dog.ImageUrl"></b-carousel-slide>
-          </b-carousel> -->
         </b-col>
-
-        <!-- <button @click="showSingle">Show single picture.</button>
-      <vue-easy-lightbox
-      escDisabled
-      moveDisabled
-      :visible="visible"
-      imgs="dog.ImageUrl"
-      :index="index"
-      @hide="handleHide"
-    ></vue-easy-lightbox>  -->
-
         <b-col md="9" class="p-4">
           <b-card-title
           >{{ dog.Name }}
@@ -173,7 +134,7 @@
             >
           </b-card-title>
           <b-card-sub-title class="d-flex justify-content-between">
-            <div>{{ dog.Age }} year(s) old</div>
+            <div>{{ dog.Age }} <span v-if="dog.Age>1">years old</span><span v-if="dog.Age===1">year old</span></div>
             <div>
               <b-img
                   v-b-tooltip.hover
@@ -238,32 +199,25 @@
           </b-card-sub-title>
           <b-card-text>
             <p>
-              Racing Name:
+              <strong>Racing Name:</strong>
               {{ dog.RacingName ? dog.RacingName : "Never Raced" }} <br/>
-              Microchip No: {{ dog.Microchip ? dog.Microchip : "N/A" }}
+              <strong>Microchip No:</strong> {{ dog.Microchip ? dog.Microchip : "N/A" }}
             </p>
             <p></p>
-            <!-- {{dog.Description}} -->
-            <!-- {{ dog.Description | truncate(1500, "...") }} -->
-            <!-- <span>View more</span> -->
           </b-card-text>
 
           <b-card-text>
             <span v-if="!read_more[dog.Name]">
-              {{ dog.Description | truncate(150, "...") }}
+              {{ dog.Description | truncate(250, "...") }}
             </span>
             <span v-if="read_more[dog.Name]"> {{ dog.Description }} </span>
-            <b-link @click="showMore(dog.Name)" v-if="!read_more[dog.Name]"
-            >Show more
+            <b-link @click="showMore(dog.Name)" v-if="!read_more[dog.Name]">Show more
               <b-icon icon="chevron-expand" aria-hidden="true"></b-icon>
-            </b-link
-            >
+            </b-link>
             <b-link @click="showLess(dog.Name)" v-if="read_more[dog.Name]"
             >Show less
               <b-icon icon="chevron-contract" aria-hidden="true"></b-icon>
-            </b-link
-            >
-            <!-- <truncate action-class="customClass" clamp="Show more" :length="90" less="Show Less" type="text" :text="dog.Description"></truncate> -->
+            </b-link>
           </b-card-text>
 
           <template #footer>
@@ -273,20 +227,22 @@
       </b-row>
     </b-card>
 
-    <b-modal id="myModal" hide-footer size="xl">
-      <!-- Hello {{ selectedDog.GapMediaLinks }} {{ selectedDog.Availability }} ! -->
+    <b-modal id="DogModal" hide-footer size="xl">
       <template #modal-title>
-        {{ selectedDog.Name }} - {{ selectedDog.Age }} Year(s) Old
+        {{ selectedDog.Name }}  <b-badge variant="light" pill>{{ selectedDog.Age }} <span v-if="selectedDog.Age>1">years old</span><span v-if="selectedDog.Age===1">year old</span> </b-badge>
       </template>
       <b-carousel
           id="carousel-fade"
+          ref="dog_slideshow"
           style="text-shadow: 0 0 2px #000"
           controls
           indicators
+          background="#ddd"
           label-next='Next'
           :interval="0"
           img-width="1023"
           img-height="480"
+          @sliding-start="onSlideStart"
       >
         <div v-for="dogImage in selectedDog.GapMediaLinks" :key="dogImage.id">
           <b-carousel-slide
@@ -294,16 +250,6 @@
               :img-src="dogImage.MediaUrl"
               :caption="dogImage.Caption"
           ></b-carousel-slide>
-          <!-- <b-carousel-slide v-if="dogImage.FileType == 'VIDEO'"
-          :text-html="embedCode"
-          >
-            <b-embed
-              type="iframe"
-              aspect="16by9"
-              :src="embedurl"
-              allowfullscreen
-            ></b-embed>
-          </b-carousel-slide> -->
           <b-carousel-slide v-if="dogImage.FileType == 'VIDEO'" controls="false">
             <template #img>
               <b-embed type="iframe" aspect="16by9"
@@ -314,40 +260,27 @@
         </div>
       </b-carousel>
     </b-modal>
-    <!-- </b-card-group> -->
   </div>
 </template>
 
 <script>
-// import axios from 'axios';
-import LightBox from "vue-image-lightbox";
-
-require("vue-image-lightbox/dist/vue-image-lightbox.min.css");
 
 export default {
   name: "home",
-  components: {
-    LightBox,
-  },
-
   data() {
     return {
+      //Dev Server Config
       hostname: "http://gaptest.local",
+      //Dev Server Config end
       myDogs: null,
       searchValue: "",
       never_raced: false,
       home_waiting: false,
       age_filter: 14,
       loading: true,
-      selected: [], // Must be an array reference!
+      selected: [],
       errors: [],
-      age_options: [
-        {text: "0-1 yr olds", value: "1"},
-        {text: "1-2 yr olds", value: "2"},
-        {text: "2-3 yr olds", value: "3"},
-        {text: "3-4 yr olds", value: "4"},
-      ],
-      clasifications: [
+      classifications: [
         {text: "Child Tolerant", value: "IsChildFriendly"},
         {text: "Prefer Companion", value: "IsDogFriendly"},
         {text: "Cat Tolerant", value: "IsCatFriendly"},
@@ -356,21 +289,9 @@ export default {
         {text: "Samll Dog Tolerant", value: "IsSmallDogFriendly"},
         {text: "Apartment Living", value: "IsApartmentFriendly"},
       ],
-      clasifications_selected: [],
+      classifications_selected: [],
       read_more: {},
-      media: [
-        {
-          thumb:
-              "http://fasttrack.blob.core.windows.net/fasttrackpublic/GAPDogs/5875.jpg",
-          src: "http://fasttrack.blob.core.windows.net/fasttrackpublic/GAPDogs/5875.jpg",
-        },
-      ],
-      showLightbox: false,
       selectedDog: "",
-      embedurl: "https://www.youtube.com/embed/zpOULjyy-n8?controls=0",
-      embedCode:
-          '<iframe width="560" height="315" src="https://www.youtube.com/embed/O41t33XZS6I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-      imageLink: 'https://gap.grv.org.au/wp-content/uploads/2021/12/Lucas-Scott-with-Stuart-the-greyhound_.jpg'
     };
   },
   computed: {
@@ -391,9 +312,9 @@ export default {
         });
       }
 
-      if (this.clasifications_selected && tempDogs) {
+      if (this.classifications_selected && tempDogs) {
         tempDogs = tempDogs.filter((item) =>
-            this.clasifications_selected.every(
+            this.classifications_selected.every(
                 (selection) => item["Classifications"][selection] === true
             )
         );
@@ -410,7 +331,6 @@ export default {
           if (!item.Availability.includes("home waiting")) return item;
         });
       }
-      // this.myDogs = tempDogs
       return tempDogs;
     },
   },
@@ -433,10 +353,6 @@ export default {
     showLess(Name) {
       this.$set(this.read_more, Name, false);
     },
-    openGallery() {
-      this.$refs.lightbox.showImage();
-      // this.showLightbox = true;
-    },
     sendInfo(dog) {
       this.selectedDog = dog;
     },
@@ -447,7 +363,8 @@ export default {
         video_id = video_id.substring(0, ampersandPosition);
       }
       return video_id;
-    }
+    },
+
   },
   filters: {
     truncate: function (text, length, suffix) {
@@ -470,10 +387,9 @@ export default {
     } catch (error) {
       console.log("ERROR CODE:113 - FT JSON ERROR!");
     }
-
     this.loading = false;
-
-    console.log(this.myDogs);
+    //For Debugging purposes
+    // console.log(this.myDogs);
   },
 };
 </script>
