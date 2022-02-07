@@ -85,17 +85,17 @@
             <img
                 v-lazy="dog.ImageUrl || dog.ImageUrl"
                 style="width: 100%"/>
-            <div class="d-flex flex-row bd-highlight mb-3">
+            <div class="d-flex flex-row bd-highlight mb-3 flex-wrap">
               <span
                   v-for="dogImage in dog.GapMediaLinks"
                   :key="dogImage.id">
                 <img
                     class="img-thumbnail"
                     v-if="dogImage.FileType == 'IMAGE'"
-                    style="width: 35px; height: 35px; margin: 10px"
+                    style="width: 35px; height: 35px; margin: 5px"
                     v-lazy="dogImage.MediaUrl || dogImage.MediaUrl"/>
                 <p v-if="dogImage.FileType == 'VIDEO'" class="h3 mb-2">
-                  <b-icon class=" " icon="play-btn-fill" aria-hidden="true" variant="dark" style="margin: 15px; width: 15px"/>
+                  <b-icon class=" " icon="play-btn-fill" aria-hidden="true" variant="dark" style="margin: 10px; width: 15px"/>
                 </p>
               </span>
             </div>
@@ -250,12 +250,13 @@
               :img-src="dogImage.MediaUrl"
               :caption="dogImage.Caption"
           ></b-carousel-slide>
-          <b-carousel-slide v-if="dogImage.FileType == 'VIDEO'" controls="false">
+          <b-carousel-slide v-if="dogImage.FileType == 'VIDEO'" controls="false" :caption="dogImage.Caption">
             <template #img>
               <b-embed type="iframe" aspect="16by9"
                        :src="'https://www.youtube.com/embed/'+parseYoutubeURL(dogImage.MediaUrl)+'?controls=0'"
                        modestbranding></b-embed>
             </template>
+
           </b-carousel-slide>
         </div>
       </b-carousel>
@@ -286,7 +287,7 @@ export default {
         {text: "Cat Tolerant", value: "IsCatFriendly"},
         {text: "Poultry Tolerant", value: "IsPoultryFriendly"},
         {text: "Livestock Tolerant", value: "IsLivestockFriendly"},
-        {text: "Samll Dog Tolerant", value: "IsSmallDogFriendly"},
+        {text: "Small Dog Tolerant", value: "IsSmallDogFriendly"},
         {text: "Apartment Living", value: "IsApartmentFriendly"},
       ],
       classifications_selected: [],
