@@ -83,7 +83,7 @@
           class="pull-left"
           src="/api/v2/img/IsSmallDogFriendly.jpg"
           alt=""
-          style="padding-top: 10px; padding-right: 10px"
+          style="padding-top: 10px; padding-right: 10px;padding-bottom: 15px;"
         />All our greyhounds are assessed with small dogs. Some of our greyhounds either play too roughly or retain some prey drive that means they may be unsafe to live with a small dog. This symbol indicates we believe the greyhound is ok to live with small dogs.</b-list-group-item
       >
       <b-list-group-item
@@ -100,7 +100,9 @@
     <br>
     <p v-if="this.showSaveMsg"><img width="25px" src="/api/v2/img/loading.gif"> Loading...</p>
     <home @finishLoading="loadingStop" />
+      <div class="text-center"><small>v2.0 build 180222</small></div>
     </div>
+
   </div>
 </template>
 

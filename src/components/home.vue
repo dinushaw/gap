@@ -52,7 +52,7 @@
         >Never Raced
         </b-form-checkbox
         >
-        <b-form-checkbox v-model="home_waiting" key="Never Raced">
+        <b-form-checkbox v-model="home_waiting" key="Home Waiting">
           Exclude 'home waiting' dogs
         </b-form-checkbox
         >
@@ -208,7 +208,7 @@
 
           <b-card-text>
             <span v-if="!read_more[dog.Name]">
-              {{ dog.Description | truncate(250, "...") }}
+              {{ dog.Description | truncate(250,"...") }}
             </span>
             <span v-if="read_more[dog.Name]"> {{ dog.Description }} </span>
             <b-link @click="showMore(dog.Name)" v-if="!read_more[dog.Name]">Show more
@@ -242,7 +242,6 @@
           :interval="0"
           img-width="1023"
           img-height="480"
-          @sliding-start="onSlideStart"
       >
         <div v-for="dogImage in selectedDog.GapMediaLinks" :key="dogImage.id">
           <b-carousel-slide
@@ -273,7 +272,7 @@ export default {
       //Dev Server Config
       hostname: "http://gaptest.local",
       //Dev Server Config end
-      myDogs: null,
+      myDogs: [],
       searchValue: "",
       never_raced: false,
       home_waiting: false,
@@ -369,7 +368,7 @@ export default {
   },
   filters: {
     truncate: function (text, length, suffix) {
-      if (text.length > length) {
+      if (text && text.length > length ) {
         return text.substring(0, length) + suffix;
       } else {
         return text;
