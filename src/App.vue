@@ -98,11 +98,10 @@
       >
     </b-list-group>
     <br>
-    <p v-if="this.showSaveMsg"><img width="25px" src="/api/v2/img/loading.gif"> Loading...</p>
-    <home @finishLoading="loadingStop" />
-      <div class="text-center"><small>v2.0 build 180222</small></div>
+    <p v-if="this.showLoading"><img width="25px" src="/api/v2/img/loading.gif"> Loading...</p>
+    <home v-show="!this.showLoading" @finishLoading="loadingStop" />
+    <div class="text-center"><small>v2.0 build 180222</small></div>
     </div>
-
   </div>
 </template>
 
@@ -117,12 +116,12 @@ export default {
   },
   data() {
     return {
-      showSaveMsg: true,
+      showLoading: true,
     };
   },
   methods: {
     loadingStop() {
-      this.showSaveMsg = false;
+      this.showLoading = false;
     },
   },
 };
