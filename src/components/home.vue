@@ -77,7 +77,7 @@
         <b-col md="3">
           <b-link
               class="mx-auto"
-              v-if="dog.GapMediaLinks.length >0"
+              v-if="dog.GapMediaLinks"
               variant="success"
               v-b-modal="'DogModal'"
               user="'item'"

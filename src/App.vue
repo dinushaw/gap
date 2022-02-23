@@ -100,7 +100,7 @@
     <br>
     <p v-if="this.showLoading"><img width="25px" src="/api/v2/img/loading.gif"> Loading...</p>
     <home v-show="!this.showLoading" @finishLoading="loadingStop" />
-    <div class="text-center"><small>v2.0 build 180222</small></div>
+    <div class="text-center"><small>v2.0 build 240222</small></div>
     </div>
   </div>
 </template>
