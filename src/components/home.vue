@@ -62,7 +62,7 @@
     <span v-if="filteredDogs.length > 1 || filteredDogs.length === 0"
     >dogs
     </span>
-    <span v-if="filteredDogs.length === 1">pooch </span>matching your selection
+    <span v-if="filteredDogs.length === 1">dog </span>matching your selection
     <hr/>
 
     <b-card
