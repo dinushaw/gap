@@ -20,7 +20,7 @@
             @click="sortedDogs"
         >
           <b-icon
-              icon="sort-down-alt"
+              icon="sort-down"
               @click="sortedDogs"
               aria-hidden="true"
           ></b-icon>
@@ -75,6 +75,9 @@
         footer-tag="footer">
       <b-row no-gutters>
         <b-col md="3">
+          <img
+              v-lazy="dog.ImageUrl || dog.ImageUrl"
+              style="width: 100%"/>
           <b-link
               class="mx-auto"
               v-if="dog.GapMediaLinks"
@@ -82,9 +85,7 @@
               v-b-modal="'DogModal'"
               user="'item'"
               @click="sendInfo(dog)">
-            <img
-                v-lazy="dog.ImageUrl || dog.ImageUrl"
-                style="width: 100%"/>
+
             <div class="d-flex flex-row bd-highlight mb-3 flex-wrap">
               <span
                   v-for="dogImage in dog.GapMediaLinks"
@@ -339,8 +340,8 @@ export default {
       let tempDogs = this.filteredDogs;
 
       function compare(a, b) {
-        if (a.Age < b.Age) return -1;
-        if (a.Age > b.Age) return 1;
+        if (a.Age > b.Age) return -1;
+        if (a.Age < b.Age) return 1;
         return 0;
       }
 
